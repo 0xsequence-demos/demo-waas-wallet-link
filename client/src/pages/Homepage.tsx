@@ -98,6 +98,7 @@ export const Homepage = () => {
           <div className="container">
             <div className="left-side">
               <EmbeddedWalletState
+              urlParams={urlParams}
                 setKey={setKey}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
@@ -287,6 +288,7 @@ const Inventory = (props: any) => {
 }
 
 const EmbeddedWalletState = (props: {
+  urlParams: any,
   setKey: any,
   walletAddress: string | undefined;
   chainId: number;
@@ -354,7 +356,8 @@ const EmbeddedWalletState = (props: {
     ) :
       walletAddress &&
         <Connected
-          setKey={props.setKey}
+        urlParams={props.urlParams}
+        setKey={props.setKey}
           isModalOpen={props.isModalOpen}
           setIsModalOpen={props.setIsModalOpen}
           isCollectibleModalOpen={props.isCollectibleModalOpen}

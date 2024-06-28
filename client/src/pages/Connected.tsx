@@ -11,12 +11,19 @@ import {
 } from "@0xsequence/design-system";
 
 import React, {useState} from "react";
-import {useAccount, useDisconnect} from "wagmi";
+import { messageToSign } from '../constants/messageToSign'
+import {useAccount, useDisconnect, 
+  useChainId,
+  useConnections,
+  usePublicClient,
+  useWalletClient,
+  } from "wagmi";
 import {ClickToCopy} from "../components/ClickToCopy/ClickToCopy";
 import {TransferTokenModal} from "./TransferTokenModal";
 import {TransferCollectibleModal} from "./TransferCollectibleModal";
 
 export const Connected = ({
+  urlParams,
   setKey,
   eoaWalletAddress,
   chainId,
@@ -26,7 +33,9 @@ export const Connected = ({
   setIsModalOpen,
   isCollectibleModalOpen,
   setIsCollectibleModalOpen,
+
 }: {
+  urlParams: any;
   setKey: any;
   eoaWalletAddress: `0x${string}` | undefined;
   chainId: number;
@@ -37,9 +46,132 @@ export const Connected = ({
   isCollectibleModalOpen: any;
   setIsCollectibleModalOpen: any;
 }) => {
-  const {address} = useAccount();
+  const [isSigningMessage, setIsSigningMessage] = React.useState(false)
+  const [isWalletLinked, setIsWalletLinked] = React.useState<boolean | undefined>()
+  const [walletLinkingMessage, setWalletLinkingMessage] = React.useState<string | undefined>()
+  const [linkedWallets, setLinkedWallets] = React.useState([])
+  const {address} = useAccount()
   const {disconnect} = useDisconnect();
+  const { data: walletClient } = useWalletClient()
+  const publicClient = usePublicClient({ chainId })
+
   const isMobile = useMediaQuery("@media screen and (max-width: 500px)");
+
+  const getLinkedWallets = async () => {
+
+    const apiUrl = 'https://api.sequence.app/rpc/API/GetLinkedWallets';
+      
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            // TODO: SessionAuthProof for EW - add logic for EuthAuthProof
+            // const proofString = `SessionAuthProof ${urlParams.get("sessionId")} ${urlParams.get("signature")} ${urlParams.get("nonce")}`
+
+            console.log()
+
+            const proofString = "test"
+
+            const bodyData = {
+                walletaddress: eoaWalletAddress
+            };
+
+            console.log(bodyData)
+      
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(bodyData)
+            })
+            .then(response => response.json())
+            .then(data => {
+              console.log(data.linkedWallets)
+              setLinkedWallets(data.linkedWallets)})
+            .catch((error) => console.error('Error:', error));
+
+  }
+
+  const linkWallet = async () => {
+    if (!walletClient || !publicClient) {
+      return
+    }
+
+    setIsSigningMessage(true)
+
+    try {
+
+      const [account] = await walletClient.getAddresses()
+
+      console.log(eoaWalletAddress)
+
+      const message = `Link wallet to ${eoaWalletAddress}` // embedded wallet address 
+
+      const sig = await walletClient.signMessage({
+        account: address || ('' as `0x${string}`),
+        message
+      })
+      console.log('address', address)
+      console.log('signature:', sig)
+      console.log('chainId in homepage', chainId)
+
+
+      const isValid = await publicClient.verifyMessage({
+        address: account,
+        message,
+        signature: sig
+      })
+
+      const apiUrl = 'https://api.sequence.app/rpc/API/LinkWallet';
+      
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            // TODO: SessionAuthProof for EW - add logic for EuthAuthProof
+            // const proofString = `SessionAuthProof ${urlParams.get("sessionId")} ${urlParams.get("signature")} ${urlParams.get("nonce")}`
+
+            console.log()
+
+            const proofString = "test"
+
+            const bodyData = {
+                chainId: chainId.toString(),
+                walletAddress: eoaWalletAddress, // embedded wallet address
+                ethAuthProofString: proofString,
+                linkedWalletMessage: message, // Message from EOA
+                linkedWalletSignature: sig
+            };
+
+            console.log(bodyData)
+      
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(bodyData)
+            })
+            .then(response => response.json())
+            .then(data => {
+              console.log('linking');
+              setIsWalletLinked(true)
+              setWalletLinkingMessage("Wallet Linked")
+              console.log(data)})
+            .catch((error) => console.error('Error:', error)
+            
+            );
+
+
+      // setIsSigningMessage(false)
+      // setIsMessageValid(isValid)
+      // setMessageSig(sig)
+
+      console.log('isValid?', isValid)
+    } catch (e) {
+      setIsSigningMessage(false)
+      console.error(e)
+    }
+  }
+
+
 
   return (
     <>
@@ -73,7 +205,7 @@ export const Connected = ({
             justifyContent="space-between"
             flexDirection={{sm: "column", md: "row"}}>
             <Box gap="1" flexDirection={{sm: "column", md: "row"}}>
-              <Button
+            <Button
                 shape="square"
                 leftIcon={CurrencyIcon}
                 label="Transfer Token"
@@ -88,6 +220,45 @@ export const Connected = ({
                 width={{sm: "full", md: "auto"}}
                 onClick={() => setIsCollectibleModalOpen(true)}
               />
+              </Box>
+          </Box>
+
+      <Box
+            marginTop="2"
+            gap="1"
+            justifyContent="space-between"
+            flexDirection={{sm: "column", md: "row"}}>
+              <Box gap="1" flexDirection={{sm: "column", md: "row"}}>
+
+
+
+              <Button
+                shape="square"
+                leftIcon={CurrencyIcon}
+                label="Link Wallet"
+                width={{sm: "full", md: "auto"}}
+                onClick={() => linkWallet()}
+                isPending={isSigningMessage}
+              />    
+
+<Text variant="code" as="p" ellipsis>
+                  {walletLinkingMessage}
+                </Text>
+
+<Button
+                shape="square"
+                leftIcon={CurrencyIcon}
+                label="Get Linked Wallets"
+                width={{sm: "full", md: "auto"}}
+                onClick={() => getLinkedWallets()}
+              />    
+                    <ul>
+        {linkedWallets.map(wallet => (
+          <li>
+            {wallet}
+          </li>
+        ))}
+      </ul>
             </Box>
 
             <Button
