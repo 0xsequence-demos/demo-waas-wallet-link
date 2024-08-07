@@ -12,9 +12,8 @@ import {useSwitchChain, useWriteContract, useAccount} from "wagmi";
 import {ERC1155_ABI, ERC721_ABI} from "../constants/abi";
 import {CollectibleSelectButton} from "../components/CollectibleSelectButton/CollectibleSelectButton";
 import {NetworkSwitch} from "../components/NetworkSwitch/NetworkSwitch";
-import {enabledChainIDMappings}from '../constants/network'
 
-const PROJECT_ACCESS_KEY = import.meta.env.VITE_SEQUENCE_PROJECT_ACCESS_KEY;
+const PROJECT_ACCESS_KEY = import.meta.env.VITE_SEQUENCE_PROJECT_ACCESS_KEY || 'AQAAAAAAADVH8R2AGuQhwQ1y8NaEf1T7PJM';
 export const TransferCollectibleModal = ({
   setKey,
   chainId: chainIdFromProps,

@@ -9,7 +9,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "0xsequence": "^1.10.8",
+    "0xsequence": "0.0.0-20240807210827",
     "@0xsequence/design-system": "^1.7.1",
     "@0xsequence/indexer": "1.9.29",
     "@0xsequence/kit": "^2.10.1",
@@ -25,6 +25,7 @@
     "wagmi": "^2.9.10"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240806.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.2",
     "@types/react": "^18.2.74",
@@ -36,6 +37,8 @@
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.4",
     "vite": "^5.2.8",
-    "vitest": "^1.4.0"
-  }
+    "vitest": "^1.4.0",
+    "wrangler": "^3.69.1"
+  },
+  "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
 }

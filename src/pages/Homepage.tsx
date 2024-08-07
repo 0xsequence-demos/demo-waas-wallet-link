@@ -20,9 +20,7 @@ import {Connected} from "./Connected";
 import {ClickToCopy} from "../components/ClickToCopy/ClickToCopy";
 import {SequenceIndexer} from '@0xsequence/indexer'
 import sequenceIconSrc from "../asset/sequence-icon.svg";
-import { networks, findSupportedNetwork, NetworkConfig } from '@0xsequence/network'
 import {enabledChainIDMappings}from '../constants/network'
-const SERVER_URL = import.meta.env.VITE_SERVER_URL!;
 
 export const Homepage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -129,6 +127,47 @@ export const Homepage = () => {
           </Box>
         )}
       </Box>
+
+      <Button label="example" onClick={()=>{
+      fetch('/example').then((r)=>{
+        debugger
+      })
+    }} />
+    <Button label="test" onClick={()=>{
+      fetch('/test').then((r)=>{
+        debugger
+      })
+    }} />
+    <Button label="nothing" onClick={()=>{
+      fetch('/nothing').then((r)=>{
+        debugger
+      })
+    }} />
+    <Button label="example2" onClick={()=>{
+      fetch('/example2').then((r)=>{
+        debugger
+      })
+    }} />
+    <Button label="generateNonce" onClick={()=>{
+      fetch('/generateNonce').then((r)=>{
+        debugger
+      })
+    }} />
+    <Button label="generateNonce2" onClick={()=>{
+      fetch('/generateNonce2').then((r)=>{
+        debugger
+      })
+    }} />
+    <Button label="generateNonce3" onClick={()=>{
+      fetch('/generateNonce3').then((r)=>{
+        debugger
+      })
+    }} />
+    <Button label="verifyNonce" onClick={()=>{
+      fetch('/verifyNonce').then((r)=>{
+        debugger
+      })
+    }} />
     </main>
   );
 };

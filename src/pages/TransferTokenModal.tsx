@@ -11,9 +11,8 @@ import {ERC20_ABI} from "../constants/abi";
 import {NativeTokenSelectButton} from "../components/NativeTokenSelectButton/NativeTokenSelectButton";
 import {TokenSelectButton} from "../components/TokenSelectButton/TokenSelectButton";
 import {NetworkSwitch} from "../components/NetworkSwitch/NetworkSwitch";
-import { AnimatePresence } from "framer-motion";
 
-const PROJECT_ACCESS_KEY = import.meta.env.VITE_SEQUENCE_PROJECT_ACCESS_KEY;
+const PROJECT_ACCESS_KEY = import.meta.env.VITE_SEQUENCE_PROJECT_ACCESS_KEY || 'AQAAAAAAADVH8R2AGuQhwQ1y8NaEf1T7PJM';
 export const TransferTokenModal = ({
   isLoading,
   setIsLoading,
